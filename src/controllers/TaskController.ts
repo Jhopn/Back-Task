@@ -13,7 +13,14 @@ export const createTask = async (req: Request, res: Response) => {
       },
     });
 
-    return res.status(200).json(taskCreated);
+    const isUser = await prisma.user.findFirst({
+      where: {
+        id: userId
+      }
+    })
+
+    if(!isUser) return res.status(404).json({ error: "Usuário inexistente"})
+    return res.status(201).json(taskCreated);
   } catch (error) {
     return res.status(400).json({
       error: "Erro ao criar tarefa",
