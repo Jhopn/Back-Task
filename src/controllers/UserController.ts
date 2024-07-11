@@ -23,9 +23,8 @@ export const createUser = async (req: Request, res: Response) => {
       },
     });
 
-    return res.status(200).json(createdUser);
+    return res.status(201).json(createdUser);
 
-    return res.status(200).json(createdUser);
   } catch (error) {
     return res.status(400).json({
       error: "Erro ao criar Usuário",
@@ -36,7 +35,30 @@ export const createUser = async (req: Request, res: Response) => {
 
 export const updateUser = async (req: Request, res: Response) => {
   try {
+    const { id } = req.params;
     const { username, email, password, avatar } = req.body;
+    
+    const isUser = await prisma.user.findUnique({
+      where: {
+        id
+      }
+    })
+
+    if(!isUser) return res.status(404).json({error: "Usuário não encontrado"})
+
+    const updatedUser = await prisma.user.update({
+      where: {
+        id
+      },
+      data: {
+        username, 
+        email, 
+        password, 
+        avatar
+      }
+    })
+
+    return res.status(200).json(updatedUser)
   } catch (error) {
     return res.status(400).json({
       error: "Erro ao criar Usuário",
@@ -55,7 +77,7 @@ export const readUser = async (req: Request, res: Response) => {
       },
     });
 
-    if (isId!) return res.status(404).json({ error: "Erro ao encontrar User" });
+    if (!isId) return res.status(404).json({ error: "Erro ao encontrar User" });
 
     const user = await prisma.user.findUnique({
       where: {
@@ -88,7 +110,7 @@ export const deleteUser = async (req: Request, res: Response) => {
       },
     });
 
-    if (isId!) return res.status(404).json({ error: "Erro ao encontrar User" });
+    if (!isId) return res.status(404).json({ error: "Erro ao encontrar User" });
 
     await prisma.user.delete({
       where: {
