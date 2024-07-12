@@ -5,15 +5,17 @@ import {
   readTask,
   updateTask,
   deleteTask,
+  stripeTask
 } from "../controllers/TaskController";
 
 
 const router = Router();
 
-router.get("/atividade/:id", readTask);
-router.post("/atividade", createTask);
-router.put("/atividade/:id", updateTask);
-router.delete("/atividade/:id", deleteTask);
+router.get("/tarefa/:id", readTask);
+router.post("/tarefa/create", createTask);
+router.get("/tarefas", stripeTask)
+router.put("/tarefa/:id", updateTask);
+router.delete("/tarefa/:id", deleteTask);
 
 
 export { router as RouterTask };
