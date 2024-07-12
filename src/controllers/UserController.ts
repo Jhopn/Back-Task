@@ -1,7 +1,9 @@
 import { prisma } from "../connection/prisma";
-import { randomInt } from 'node:crypto';
+import jwt from 'jsonwebtoken';
+import { hash, randomInt } from 'node:crypto';
 import bcrypt from 'bcryptjs';
 import { Request, Response } from "express";
+
 
 export const loginUser = async (req: Request, res: Response) => {
   try {
@@ -26,9 +28,23 @@ export const loginUser = async (req: Request, res: Response) => {
       });
     }
 
+    const { id } = user;
+
+    const jwtToken = jwt.sign(
+      {
+        email: user.email,
+        userId: user.id,
+      },
+      process.env.JWT_SECRET as string,
+      {
+        expiresIn: '1h',
+      }
+    );
+
     return res.status(200).json({
-      message: "Logado com sucesso"
-});
+      userId: id,
+      accessToken: jwtToken,
+    });
   } catch (error) {
     return res.status(401).json({
       message: 'Falha de autenticação.',
@@ -40,7 +56,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
 export const createUser = async (req: Request, res: Response) => {
   try {
-    const { username, email, password, avatar } = req.body;
+    const { username, email, accessName,  password, avatar } = req.body;
 
     const emailCheck = await prisma.user.findFirst({
       where: {
@@ -59,12 +75,30 @@ export const createUser = async (req: Request, res: Response) => {
             username,
             email,
             avatar,
-            password: hash,    
+            password: hash,
+            UserAccess: {
+              create: {
+                Access: {
+                  connect: {
+                    name: accessName || 'Usuario',
+                  },
+                },
+              },
+            },
           },
           select: {
             id: true,
             username: true,
             email: true,
+            UserAccess: {
+              select: {
+                Access: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
           },
         });
 
@@ -84,7 +118,7 @@ export const createUser = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { username, email, password, avatar } = req.body;
+    const { username, password } = req.body;
     
     const isUser = await prisma.user.findUnique({
       where: {
@@ -92,26 +126,31 @@ export const updateUser = async (req: Request, res: Response) => {
       }
     })
 
-    if(!isUser) {
-      return res.status(404).json({error: "Usuário não encontrado"})
-    } else {
-      const ramdomSalt = randomInt(10, 16);
-      bcrypt.hash(password, ramdomSalt).then(async (hash) => {
-        const updatedUser = await prisma.user.update({
-          where: {
-            id
-          },
-          data: {
-            username, 
-            email, 
-            password: hash, 
-            avatar
-          }
-        })
+    if(!isUser) return res.status(404).json({error: "Usuário não encontrado"})
     
-        return res.status(200).json(updatedUser)
+    const ramdomSalt = randomInt(10, 16);
+    bcrypt.hash(password, ramdomSalt).then(async (hash) => {
+      const updateData = {
+        username,
+        password
+      };
+  
+      if (password) {
+        const ramdomSalt = randomInt(10, 16);
+        const hashedPassword = await bcrypt.hash(password, ramdomSalt);
+        updateData.password = hashedPassword;
+      }
+
+      const updatedUser = await prisma.user.update({
+        where: {
+          id
+        },
+        data: updateData
       })
-    }
+  
+      return res.status(200).json(updatedUser)
+    })
+    
   
   } catch (error) {
     return res.status(400).json({
@@ -153,6 +192,38 @@ export const readUser = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const stripeUser = async (req: Request, res: Response) => {
+  try{
+    const users = await prisma.user.findMany({
+      orderBy: {
+        id: 'desc'
+      },
+      select: {
+        id: true, 
+        username: true, 
+        email: true,
+        avatar: true,
+        UserAccess: {
+          select: {
+            Access: {
+              select: {
+                name: true
+              }
+            }
+          }
+        }
+      }
+    })
+
+    return res.status(200).json(users)
+  }catch(error){
+    return res.status(400).json({
+      error: "Erro ao listar usuários",
+      message: error
+    })
+  }
+}
 
 export const deleteUser = async (req: Request, res: Response) => {
   try {
