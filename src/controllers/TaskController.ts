@@ -40,6 +40,7 @@ export const readTask = async (req: Request, res: Response) => {
         title: true,
         description: true,
         dueDate: true,
+        status: true,
         userId: true,
       },
     });
@@ -77,6 +78,7 @@ export const updateTask = async (req: Request, res: Response) => {
         title,
         description,
         dueDate,
+        status: "COMPLETO",
         userId,
       },
     });
@@ -92,6 +94,19 @@ export const updateTask = async (req: Request, res: Response) => {
 
 export const stripeTask = async (req: Request, res: Response) => {
   try {
+    const tasks = await prisma.tasks.findMany({
+      select: {
+        id: true, 
+        title: true,
+        description: true,
+        dueDate: true,
+        status: true
+      }
+    })
+
+    if(!tasks) return res.status(404).json({error: "Nenhuma tarefa encontrada"})
+    
+    return res.status(200).json(tasks)
   } catch (error) {
     return res.status(400).json({
       error: "Erro ao listar tarefas",
@@ -109,8 +124,13 @@ export const deleteTask = async (req: Request, res: Response) => {
       },
     });
 
-    if (task!) return res.status(404).json({ error: "Task não encontrada!" });
+    if (!task) return res.status(404).json({ error: "Task não encontrada!" });
 
+    await prisma.tasks.delete({
+      where: {
+        id
+      }
+    })
     return res.status(200).json({ message: "Task deletada!" });
   } catch (error) {
     return res.status(400).json({
