@@ -13,7 +13,7 @@ const router = Router();
 
 router.get("/tarefa/:id", authAccess(['Admin', 'Usuario']), readTask);
 router.post("/tarefa/create", authAccess(['Admin', 'Usuario']), createTask);
-router.get("/tarefas", authAccess(['Admin', 'Usuario']), stripeTask)
+router.get("/tarefas/:id", authAccess(['Admin', 'Usuario']), stripeTask)
 router.put("/tarefa/:id", authAccess(['Admin', 'Usuario']), updateTask);
 router.delete("/tarefa/:id", authAccess(['Admin', 'Usuario']), deleteTask);
 
