@@ -1,5 +1,5 @@
 import { Router } from "express";
-
+import { authAccess } from "../middlewares/authMiddleware";
 import {
   createTask,
   readTask,
@@ -11,11 +11,11 @@ import {
 
 const router = Router();
 
-router.get("/tarefa/:id", readTask);
-router.post("/tarefa/create", createTask);
-router.get("/tarefas", stripeTask)
-router.put("/tarefa/:id", updateTask);
-router.delete("/tarefa/:id", deleteTask);
+router.get("/tarefa/:id", authAccess(['Admin', 'Usuario']), readTask);
+router.post("/tarefa/create", authAccess(['Admin', 'Usuario']), createTask);
+router.get("/tarefas", authAccess(['Admin', 'Usuario']), stripeTask)
+router.put("/tarefa/:id", authAccess(['Admin', 'Usuario']), updateTask);
+router.delete("/tarefa/:id", authAccess(['Admin', 'Usuario']), deleteTask);
 
 
 export { router as RouterTask };
