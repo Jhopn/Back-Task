@@ -118,7 +118,7 @@ export const createUser = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { username, password } = req.body;
+    const { username, password, avatar } = req.body;
     
     const isUser = await prisma.user.findUnique({
       where: {
@@ -127,6 +127,19 @@ export const updateUser = async (req: Request, res: Response) => {
     })
 
     if(!isUser) return res.status(404).json({error: "Usuário não encontrado"})
+
+    if(avatar !== null){
+      const updatedUser = await prisma.user.update({
+        where: {
+          id
+        },
+        data: {
+          avatar: avatar
+        }
+      });
+  
+      return res.status(200).json(updatedUser)
+    }
     
     const ramdomSalt = randomInt(10, 16);
     bcrypt.hash(password, ramdomSalt).then(async (hash) => {

@@ -94,10 +94,10 @@ export const updateTask = async (req: Request, res: Response) => {
 
 export const stripeTask = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const { userId } = req.params;
     const tasks = await prisma.tasks.findMany({
       where:{
-        id: id
+        userId: userId
       },
       select: {
         id: true, 
