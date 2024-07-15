@@ -23,6 +23,9 @@ Instale as Dependências:<br>
 `npm install`<br>
 `yarn install`<br>
 
+Crie o acesso para administrador e usuário:<br>
+`npm run access`<br>
+
 Inicie o Servidor de Desenvolvimento:<br>
 `npm run dev`<br>
 
