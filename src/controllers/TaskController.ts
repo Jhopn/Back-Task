@@ -103,12 +103,23 @@ export const updateStatusTask = async (req: Request, res: Response) => {
     if (!isTask)
       return res.status(404).json({ error: "Tarefa não encontrada" });
 
+    const oldStatus = await prisma.tasks.findUnique({
+      where:{
+        id,
+      },
+      select:{
+        status: true
+      }
+    })
+
+    const newStatus = oldStatus?.status === 'INCOMPLETO' ? 'COMPLETO' : 'INCOMPLETO';
+
     const updatedTask = await prisma.tasks.update({
       where: {
         id,
       },
       data: {
-        status: "COMPLETO",
+        status: newStatus,
       },
     });
 
