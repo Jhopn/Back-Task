@@ -1,3 +1,4 @@
+import { TaskStatus } from "@prisma/client";
 import { prisma } from "../connection/prisma";
 import { Request, Response } from "express";
 
@@ -112,7 +113,12 @@ export const updateStatusTask = async (req: Request, res: Response) => {
       }
     })
 
-    const newStatus = oldStatus?.status === 'INCOMPLETO' ? 'COMPLETO' : 'INCOMPLETO';
+    let newStatus;
+    if (oldStatus?.status === TaskStatus.INCOMPLETO) {
+      newStatus = TaskStatus.COMPLETO;
+    } else {
+      newStatus = TaskStatus.INCOMPLETO;
+    }
 
     const updatedTask = await prisma.tasks.update({
       where: {
