@@ -16,7 +16,7 @@ router.get("/tarefa/:id", authAccess(['Admin', 'Usuario']), readTask);
 router.post("/tarefa/create", authAccess(['Admin', 'Usuario']), createTask);
 router.get("/tarefas/:userId", authAccess(['Admin', 'Usuario']), stripeTask)
 router.put("/tarefa/:id", authAccess(['Admin', 'Usuario']), updateTask);
-router.put("/tarefa/:id", authAccess(['Admin', 'Usuario']), updateStatusTask);
+router.put("/tarefa/status/:id", authAccess(['Admin', 'Usuario']), updateStatusTask);
 router.delete("/tarefa/:id", authAccess(['Admin', 'Usuario']), deleteTask);
 
 
