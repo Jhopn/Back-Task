@@ -78,7 +78,6 @@ export const updateTask = async (req: Request, res: Response) => {
         title,
         description,
         dueDate,
-        status: "COMPLETO",
         userId,
       },
     });
@@ -87,6 +86,36 @@ export const updateTask = async (req: Request, res: Response) => {
   } catch (error) {
     return res.status(400).json({
       error: "Erro ao Atualizar tarefa",
+      message: error,
+    });
+  }
+};
+
+export const updateStatusTask = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const isTask = await prisma.tasks.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!isTask)
+      return res.status(404).json({ error: "Tarefa não encontrada" });
+
+    const updatedTask = await prisma.tasks.update({
+      where: {
+        id,
+      },
+      data: {
+        status: "COMPLETO",
+      },
+    });
+
+    return res.status(200).json(updatedTask);
+  } catch (error) {
+    return res.status(400).json({
+      error: "Erro ao Atualizar status da tarefa",
       message: error,
     });
   }
