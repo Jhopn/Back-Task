@@ -1,18 +1,22 @@
 import express  from "express";
+import cors from "cors";
+const swaggerUi = require('swagger-ui-express')
+const swaggerDocument = require('./docs/swagger-output.json');
+
 import { RouterTask } from "./routes/TaskRouter";
 import { RouterUser } from "./routes/UserRouter";
 import { RouterAccess } from "./routes/AccessRouter";
-import cors from "cors";
+
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
 app.use(cors({
-  origin: '*', // ou '*' para permitir todas as origens
-  methods: 'GET,POST,PUT,DELETE',
-  allowedHeaders: 'Content-Type,Authorization'
+  origin: '*'
 }));
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 app.get("/", (req, res) => {
   res.send("Tasks Online!");
