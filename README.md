@@ -5,6 +5,8 @@ Descrição do Projeto<br>
 Interface de Programação de Aplicação (API) criada para uso do **[Frontend](https://github.com/Guilhermeprog3/Front-Task)**
 
 E essa **[API](https://deploy-task-api.onrender.com/)** está no ar ✈
+
+Deseja ver as rotas rotas? Consulte nossa **[documentação](https://deploy-task-api.onrender.com/api-docs/)**!
 ### 🛠️ Construído com:
 
 [![My Skills](https://skillicons.dev/icons?i=nodejs,express,prisma,)](https://skillicons.dev)
