@@ -14,7 +14,7 @@ import {
 const router = Router();
 
 router.post("/login", loginUser)
-router.post("/usuario/create", createUser);
+router.post("/register", createUser);
 
 router.get("/usuarios", authAccess(['Admin']), stripeUser)
 router.get("/usuario/:id", authAccess(['Admin', 'Usuario']),readUser);
