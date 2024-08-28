@@ -609,7 +609,7 @@
         "properties": {
           "email": {
             "type": "string",
-            "example": "fulano1@admin.com"
+            "example": "fulano1@gmail.com"
           },
           "password": {
             "type": "string",
