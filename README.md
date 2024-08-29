@@ -6,7 +6,7 @@ Interface de Programação de Aplicação (API) criada para uso do **[Frontend](
 
 E essa **[API](https://deploy-task-api.onrender.com/)** está no ar ✈
 
-Deseja ver as rotas rotas? Consulte nossa **[documentação](https://deploy-task-api.onrender.com/api-docs/)**!
+Deseja ver as rotas? Consulte nossa **[documentação](https://deploy-task-api.onrender.com/api-docs/)**!
 ### 🛠️ Construído com:
 
 [![My Skills](https://skillicons.dev/icons?i=nodejs,express,prisma,)](https://skillicons.dev)
