@@ -1,6 +1,6 @@
 import { prisma } from "../connection/prisma";
 import jwt from 'jsonwebtoken';
-import { hash, randomInt } from 'node:crypto';
+import { randomInt } from 'node:crypto';
 import bcrypt from 'bcryptjs';
 import { Request, Response } from "express";
 
