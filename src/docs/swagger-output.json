@@ -279,7 +279,7 @@
         }
       }
     },
-    "/usuario/create": {
+    "/register": {
       "post": {
         "tags": ["Usuário"],
         "summary": "Registro do usuário",
