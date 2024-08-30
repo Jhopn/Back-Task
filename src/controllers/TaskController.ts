@@ -5,6 +5,15 @@ import { Request, Response } from "express";
 export const createTask = async (req: Request, res: Response) => {
   try {
     const { title, description, dueDate, userId } = req.body;
+
+    const isUser = await prisma.user.findFirst({
+      where: {
+        id: userId
+      }
+    })
+
+    if(!isUser) return res.status(404).json({ error: "Usuário inexistente"})
+    
     const taskCreated = await prisma.tasks.create({
       data: {
         title,
@@ -14,13 +23,6 @@ export const createTask = async (req: Request, res: Response) => {
       },
     });
 
-    const isUser = await prisma.user.findFirst({
-      where: {
-        id: userId
-      }
-    })
-
-    if(!isUser) return res.status(404).json({ error: "Usuário inexistente"})
     return res.status(201).json(taskCreated);
   } catch (error) {
     return res.status(400).json({
